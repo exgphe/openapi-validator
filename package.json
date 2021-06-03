@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "cd express-openapi-validate && npm run build && cd .. && npm install ./express-openapi-validate/",
+    "preinstall": "cd express-openapi-validate && npm install && npm run build",
+    "prestart": "cd ajv && npm run build && cd ../express-openapi-validate && npm run build && cd .. && npm update ajv && npm update express-openapi-validate",
     "start": "node index.js"
   },
   "keywords": [],
