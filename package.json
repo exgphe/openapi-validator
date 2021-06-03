@@ -1,0 +1,19 @@
+{
+  "name": "openapi-validator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "cd express-openapi-validate && npm run build && cd .. && npm install ./express-openapi-validate/",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-openapi-validate": "file:express-openapi-validate",
+    "js-yaml": "^4.1.0"
+  }
+}
