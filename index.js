@@ -16,7 +16,6 @@ const openApiDocument = jsYaml.load(
 )
 const validator = new OpenApiValidator(openApiDocument, {
   ajvOptions: {
-    strictSchema: false
   }
 })
 
