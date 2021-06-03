@@ -1,6 +1,6 @@
 [submodule "ajv"]
 	path = ajv
-	url = git@github.com:ajv-validator/ajv.git
+	url = git@github.com:exgphe/ajv.git
 [submodule "express-openapi-validate"]
 	path = express-openapi-validate
-	url = git@github.com:Hilzu/express-openapi-validate.git
+	url = git@github.com:exgphe/express-openapi-validate.git
