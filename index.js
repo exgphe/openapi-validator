@@ -12,11 +12,12 @@ app.use(bodyParser.json({
 }))
 
 const openApiDocument = jsYaml.load(
-  fs.readFileSync('/Users/exgphe/Downloads/jukebox3.yml', 'utf-8')
+  fs.readFileSync(process.argv[2], 'utf-8')
 )
 const validator = new OpenApiValidator(openApiDocument, {
   ajvOptions: {
-  }
+  },
+  disallowAdditionalPropertiesByDefault: true
 })
 
 app.post('/restconf/data/example-jukebox:jukebox', validator.validate('post', '/data/example-jukebox:jukebox'), (req, res, next) => {
