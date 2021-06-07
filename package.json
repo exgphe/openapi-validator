@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "cd express-openapi-validate && npm install && npm run build",
+    "preinstall": "cd express-openapi-validate && npm install && npm run build && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:. --grpc_out=grpc_js:. proto/api.proto",
     "prestart": "cd ajv && npm run build && cd ../express-openapi-validate && npm run build && cd .. && npm update ajv && npm update express-openapi-validate",
     "start": "node index.js"
   },
@@ -16,6 +16,10 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-openapi-validate": "file:express-openapi-validate",
+    "google-protobuf": "^3.17.2",
     "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "grpc-tools": "^1.11.1"
   }
 }

@@ -1,40 +1,55 @@
 const fs = require('fs')
-const express = require('express')
 const { OpenApiValidator } = require('express-openapi-validate')
 const jsYaml = require('js-yaml')
-const bodyParser = require('body-parser')
+const grpc = require('@grpc/grpc-js')
+const messages = require('./proto/api_pb')
+const services = require('./proto/api_grpc_pb')
 
-const app = express()
-app.use(bodyParser.json({
-  type (req) {
-    return true
-  }
-}))
+const PORT = 50051
 
 const openApiDocument = jsYaml.load(
   fs.readFileSync(process.argv[2], 'utf-8')
 )
 const validator = new OpenApiValidator(openApiDocument, {
-  ajvOptions: {
-  },
+  ajvOptions: {},
   disallowAdditionalPropertiesByDefault: true
 })
 
-app.post('/restconf/data/example-jukebox:jukebox', validator.validate('post', '/data/example-jukebox:jukebox'), (req, res, next) => {
-  res.json({ output: req.body })
+const server = new grpc.Server()
+
+function validate ({ request }, callback) {
+  try {
+    const path = request.getPath()
+    const params = Object.fromEntries(request.getParamsMap().toObject())
+    const query = Object.fromEntries(request.getQueryMap().toObject())
+    const validatingResponse = request.getValidatingResponse()
+    const method = request.getMethod().toLowerCase()
+    const headers = Object.fromEntries(request.getHeadersMap().toObject())
+    const rawBody = request.getBody()
+    const body = rawBody && rawBody.length > 0 ? JSON.parse(new TextDecoder().decode(request.getBody())) : null
+    const handler = validatingResponse ? validator.validateResponse(method, path) : validator.validate(method, path)
+    handler({ query, headers, params, body }, null, (err) => {
+      const reply = new messages.ValidationResponse()
+      if (err) {
+        reply.setOk(false)
+        reply.setMessage(JSON.stringify(err))
+      } else {
+        reply.setOk(true)
+      }
+      callback(null, reply)
+    })
+  } catch (err) {
+    const reply = new messages.ValidationResponse()
+    reply.setOk(false)
+    reply.setMessage(err.toString())
+    callback(null, reply)
+  }
+}
+
+server.addService(services.ApiService, {
+  validate
 })
 
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500
-  res.status(statusCode).json({
-    error: {
-      name: err.name,
-      message: err.message,
-      data: err.data
-    }
-  })
-})
-
-const server = app.listen(3000, 'localhost', () => {
-  console.log('Listening on', server.address())
+server.bindAsync(`localhost:${PORT}`, grpc.ServerCredentials.createInsecure(), () => {
+  server.start()
 })
