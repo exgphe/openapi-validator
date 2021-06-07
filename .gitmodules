@@ -1,6 +1,3 @@
-[submodule "ajv"]
-	path = ajv
-	url = git@github.com:exgphe/ajv.git
 [submodule "express-openapi-validate"]
 	path = express-openapi-validate
 	url = git@github.com:exgphe/express-openapi-validate.git
