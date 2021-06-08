@@ -5,7 +5,7 @@
   "bin": "index.js",
   "main": "index.js",
   "scripts": {
-    "preinstall": "cd express-openapi-validate && npm install && npm run build && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:. --grpc_out=grpc_js:. proto/api.proto",
+    "preinstall": "cd express-openapi-validate && npm install && npm run build && cd .. && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:. --grpc_out=grpc_js:. proto/api.proto",
     "prestart": "cd express-openapi-validate && npm run build && cd .. && npm update express-openapi-validate",
     "prepack": "npm run prestart",
     "pack": "pkg .",

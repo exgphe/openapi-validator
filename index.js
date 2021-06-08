@@ -5,7 +5,10 @@ const grpc = require('@grpc/grpc-js')
 const messages = require('./proto/api_pb')
 const services = require('./proto/api_grpc_pb')
 
-const PORT = 50051
+let PORT = 50051
+if (process.env.GRPC_PORT) {
+  PORT = Number(process.env.GRPC_PORT)
+}
 
 const openApiDocument = jsYaml.load(
   fs.readFileSync(process.argv[2], 'utf-8')
@@ -28,7 +31,7 @@ function validate ({ request }, callback) {
     const rawBody = request.getBody()
     const body = rawBody && rawBody.length > 0 ? JSON.parse(new TextDecoder().decode(request.getBody())) : null
     const handler = validatingResponse ? validator.validateResponse(method, path) : validator.validate(method, path)
-    handler({ query, headers, params, body }, null, (err) => {
+    handler({ query, headers, params, body, statusCode: 200 }, null, (err) => {
       const reply = new messages.ValidationResponse()
       if (err) {
         reply.setOk(false)
@@ -51,5 +54,6 @@ server.addService(services.ApiService, {
 })
 
 server.bindAsync(`localhost:${PORT}`, grpc.ServerCredentials.createInsecure(), () => {
+  console.log(`OpenAPI Validation Service Listening on localhost:${PORT}`)
   server.start()
 })
