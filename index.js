@@ -35,7 +35,7 @@ function validate ({ request }, callback) {
       const reply = new messages.ValidationResponse()
       if (err) {
         reply.setOk(false)
-        reply.setMessage(JSON.stringify(err))
+        reply.setMessage(JSON.stringify(err, null, 4))
       } else {
         reply.setOk(true)
       }
