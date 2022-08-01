@@ -5,10 +5,10 @@
   "bin": "index.js",
   "main": "index.js",
   "scripts": {
-    "preinstall": "cd express-openapi-validate && npm install && npm run build && cd .. && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:. --grpc_out=grpc_js:. proto/api.proto",
+    "preinstall": "cd express-openapi-validate && npm install && npm run build && cd ..",
     "prestart": "cd express-openapi-validate && npm run build && cd .. && npm update express-openapi-validate",
     "prepack": "npm run prestart",
-    "pack": "pkg .",
+    "pack": "pkg -t node12-win-x64,node16-macos,node16-linux .",
     "start": "node index.js"
   },
   "keywords": [],
@@ -23,7 +23,6 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "grpc-tools": "^1.11.1",
     "pkg": "^5.2.1"
   }
 }
